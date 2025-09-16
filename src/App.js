@@ -279,7 +279,7 @@ Respond with only a single number between 0-10.`;
     const methodologyScore = methodologyCount > 0 ? methodologySum / methodologyCount : 3;
 
     // Calculate total traditional score (0-10 range)
-    let traditionalScore = (0.6 * subjectScore) + (0.4 * methodologyScore);
+    let traditionalScore = (0.7 * subjectScore) + (0.3 * methodologyScore);
     
     // Convert to 0-10 range
     traditionalScore = (traditionalScore / 5) * 10;
@@ -446,7 +446,7 @@ Respond with only a single number between 0-10.`;
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Dissertation Supervisor Matching</h1>
+        <h1 className="text-4xl font-bold text-gray-800">Dissertation Supervisor Matching</h1>
         <p className="text-gray-600">UCL School of Management</p>
       </div>
 
