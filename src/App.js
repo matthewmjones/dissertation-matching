@@ -9,7 +9,7 @@ const DissertationMatchingSystem = () => {
   const [loading, setLoading] = useState(false);
   const [apiKey, setApiKey] = useState(process.env.REACT_APP_OPENAI_API_KEY || '');
   const [topK, setTopK] = useState(3);
-  const [embeddingModel, setEmbeddingModel] = useState('text-embedding-3-small');
+  const [embeddingModel, setEmbeddingModel] = useState('specter2');
   const [rerankerModel, setRerankerModel] = useState('gpt-4o-mini');
 
   // Sample data for demonstration
@@ -27,26 +27,25 @@ SUP003,Prof. Chen,6,3,2,5,4,4,3,2,4,"","Strategic management researcher focusing
 SUP004,Dr. Davis,12,2,3,2,5,4,3,2,5,"","Operations research specialist in supply chain management and process optimization. I develop mathematical models for logistics, inventory management, and network design using linear programming and simulation methods.",false
 SUP005,Prof. Wilson,15,4,4,4,4,4,4,3,3,"","General management researcher with broad interests across finance, strategy, and operations. I supervise diverse projects using both quantitative and qualitative methodologies across all business domains.",true`;
 
-  // OpenAI API functions
+  // Embedding API functions
   const getEmbedding = async (text, model = 'text-embedding-3-small') => {
-    const response = await fetch('https://api.openai.com/v1/embeddings', {
+    const response = await fetch('http://localhost:8000/embed', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        input: text,
-        model: model,
+        title: '',
+        abstract: text,
       }),
     });
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+      throw new Error(`Embedding API error: ${response.status}`);
     }
 
     const data = await response.json();
-    return data.data[0].embedding;
+    return data.embedding;
   };
 
   const rerankerLLM = async (studentAbstract, supervisorInterests, model = 'gpt-4o-mini') => {
@@ -507,7 +506,7 @@ Respond with only a single number between 0-10.`;
         <p className="text-sm text-gray-700">
           <strong>Scoring:</strong> 40% semantic similarity + 60% traditional (subject expertise + methodology fit)
           <br />
-          <strong>Approach:</strong> OpenAI embeddings for semantic similarity + LLM re-ranking of top-{topK} matches per student
+          <strong>Approach:</strong> SPECTER2 embeddings for semantic similarity + LLM re-ranking of top-{topK} matches per student
           <br />
         </p>
       </div>
@@ -537,8 +536,7 @@ Respond with only a single number between 0-10.`;
               onChange={(e) => setEmbeddingModel(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md text-sm"
             >
-              <option value="text-embedding-3-small">text-embedding-3-small</option>
-              <option value="text-embedding-3-large">text-embedding-3-large</option>
+              <option value="specter2">SPECTER2 (Local)</option>
             </select>
           </div>
           <div>
